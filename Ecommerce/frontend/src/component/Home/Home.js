@@ -2,6 +2,7 @@ import React from 'react';
 import products  from '../../products'
 import {Col, Row} from "react-bootstrap";
 import Products from "../Product/Product";
+import ProductScreen from "../Productscreen/ProductScreen";
 function Home() {
     return (
         <>
