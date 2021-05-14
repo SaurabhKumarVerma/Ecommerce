@@ -1,27 +1,31 @@
 import React,{useEffect,useState} from 'react';
-
+import './qtyStyle.css'
 import {Link} from "react-router-dom";
 import Rating from '../Rating/Rating'
 import Loader from "../Loader/Loader";
 import Message from "../Message/Message";
-import {Button, Card, Col, ListGroup, ListGroupItem, Row} from "react-bootstrap";
+import {Button, Card, Col, ListGroup, ListGroupItem, Row,Form} from "react-bootstrap";
 import {useDispatch,useSelector} from "react-redux";
 import { listProductsDeatils } from "../../action/productAction";
+import 'bootstrap/dist/css/bootstrap.min.css'
 
-// import { listProductDetails} from "../../action/productAction";
+function ProductScreen({ match,history }) {
+    const [qty, setQty] = useState(0);
 
-function ProductScreen({match}) {
     const dispatch = useDispatch()
     const productListDetails = useSelector(state => state.productDetails)
 
     const { error,loading,product} = productListDetails
-    console.log(product,'product')
+
 
     useEffect(() => {
         dispatch(listProductsDeatils(match.params.id))
     }, []);
 
+    const addToCartHandler = () =>{
+         history.push(`/cart/${match.params.id}?qty=${qty}`)
 
+    }
 
     return (
         <div>
@@ -80,8 +84,41 @@ function ProductScreen({match}) {
                                             </Row>
                                         </ListGroup.Item>
 
+                                        {product.countInStock > 0 && (
+                                            <ListGroup.Item>
+                                                <Row>
+                                                    <Col>
+                                                        Quantity:
+                                                    </Col>
+                                                    <Col xs = 'auto' className='my-1'>
+
+                                                        <div className="quantity" xs='auto'>
+                                                            {/*<button className="btn minus-btn disabled" type="button" onClick={() => setQty(qty -1)}>-*/}
+                                                            <button className="btn plus-btn " xs = 'auto' type="button" onClick={() => setQty(qty - 1)}>-
+                                                            </button>
+                                                                <input type="text" id="quantity" value={qty > 0 ? qty : 0 } readOnly/>
+                                                            <button className="btn plus-btn "  xs = 'auto' type="button" onClick={() => setQty(qty + 1)}>+
+                                                            </button>
+                                                        </div>
+
+                                                        {/*<Form.Control as='select' value={qty} onChange={(e) => setQty(e.target.value)}>*/}
+                                                        {/*    /!*{*!/*/}
+                                                        {/*    /!*    [...Array(product.countInStock).keys()].map((x) =>(*!/*/}
+                                                        {/*    /!*        <option key={x+1} value={x+1}>*!/*/}
+                                                        {/*    /!*            {x + 1}*!/*/}
+                                                        {/*    /!*        </option>*!/*/}
+                                                        {/*    /!*    ))*!/*/}
+                                                        {/*    /!*}*!/*/}
+                                                        {/* */}
+                                                        {/*</Form.Control>*/}
+                                                    </Col>
+                                                </Row>
+                                            </ListGroup.Item>
+                                        )}
+
                                         <ListGroup.Item>
-                                            <Button className="btn-block" disabled={product.countInStock == 0} type="button">Add to Cart</Button>
+
+                                            <Button onClick={addToCartHandler} className="btn-block"  disabled={product.countInStock == 0} type="button" >Add to Cart</Button>
                                         </ListGroup.Item>
                                     </ListGroup>
                                 </Card>
